@@ -31,7 +31,7 @@ public class AutorService {
                         + "     5) Eliminar un Autor de la base de datos\n"
                         + "     6) Ir al menu principal\n"
                         + "\n"
-                        + " Selecciona un numero del menu");
+                        + "\n Selecciona un numero del menu");
                 aux = Libreria.scan.nextInt();
 
                 switch (aux) {

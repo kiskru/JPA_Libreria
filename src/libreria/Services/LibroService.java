@@ -6,6 +6,7 @@ package libreria.Services;
 
 import Libreria.Entities.Autor;
 import Libreria.Entities.Libro;
+import java.util.List;
 import libreria.Libreria;
 import libreria.Persistencia.LibroDAO;
 
@@ -31,16 +32,22 @@ public class LibroService {
 
                 switch (aux) {
                     case "1":
+                        this.mostarTodos();
+                        break;
                     case "2":
+                        this.menuBusqueda();
+                        break;
                     case "3":
                         this.creacion();
                         break;
                     case "4":
+                        break;
                     case "10":
                         System.out.println("Volviendo al menu principal...");
                         break;
-                    default:
-                        
+                    default: 
+                        System.out.println("Opcion incorrecta.");
+
                 }
 
             } while (!aux.equals("10"));
@@ -48,31 +55,34 @@ public class LibroService {
         }
     }
 
-    public void menuBusqueda(){
+    private void menuBusqueda() {
         String aux;
         System.out.println("            Elige el Metodo de busqueda"
-                + "             1) Busqueda por ISBN."
-                + "             2) Busqueda Por Titulo."
-                + "             3) Busqueda por Autor."
-                + "             4) Busqueda pot editorial."
-                + "             5) Regresar al menu anterior.");
-        aux=Libreria.scan.next();
+                + "\n             1) Busqueda por ISBN."
+                + "\n             2) Busqueda Por Titulo."
+                + "\n             3) Busqueda por Autor."
+                + "\n             4) Busqueda pot editorial."
+                + "\n             5) Regresar al menu anterior.");
+        aux = Libreria.scan.next();
         switch (aux) {
             case "1":
-                
+                System.out.println(
+                        this.buscarPorISBN());
+                break;
+            case "2":
+                this.buscarPorTitulo();
                 break;
             default:
-                throw new AssertionError();
+                System.out.println("Opcion incorrecta.");
         }
-        
+
     }
-    public void creacion() {
+
+    private void creacion() {
 
         try {
             Libro libro = new Libro();
-            System.out.println("ingrese codigo ISBN");
-            long isbn = Libreria.scan.nextLong();
-            libro.setIsbn(isbn);
+           
             System.out.println("ingrese titulo");
             String titulo = Libreria.scan.next();
             libro.setTitulo(titulo);
@@ -105,16 +115,49 @@ public class LibroService {
 
     }
 
-    public Libro buscarPorISBN() {
-        try{
-        System.out.println("indique el ISBN para la busqueda");
-        Long id = Libreria.scan.nextLong();
-        Libro autor = dao.buscarISBN(id);
-        return autor;
-        }catch(Exception e){
-            System.out.println("No se ha encontrado un Libro con ese ISBN");
-            return null;
+    private Libro buscarPorISBN() {
+        try {
+            System.out.println("indique el ISBN para la busqueda.");
+            Long ISBN = Libreria.scan.nextLong();
+            Libro autor = dao.buscarISBN(ISBN);
+            return autor;
+        } catch (Exception e) {
+            System.out.println("No se ha encontrado un Libro con ese ISBN.");
+            throw e;
         }
     }
 
+    private void buscarPorTitulo() {
+            String titulo;
+            List lista;
+        try {
+            System.out.println("Digite el Titulo del libro que desea buscar.");
+            titulo = Libreria.scan.next();
+            lista = dao.buscarNombre(titulo);
+            if (lista.isEmpty()) {
+                System.out.println("No se han encontrado coincidencias");
+                
+            } else {
+                System.out.println("Se han encontrado "+ lista.size()+" coincidencias");
+                for (Object object : lista) {
+                    object.toString();
+                }
+            }
+            
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    
+    private void mostarTodos(){
+        try{
+        List<Libro> list = dao.listarLibros();
+        for (Libro libro : list) {
+            System.out.println(libro);
+        }
+        }catch(Exception e){
+            throw e;
+        }
+    }
+    
 }//The end

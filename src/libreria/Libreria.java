@@ -34,6 +34,7 @@ public class Libreria {
                 switch (opc) {
                     case "1":
                     case "libros":
+                        libSer.menuLibros();
                         break;
                     case "2":
                     case "autores":

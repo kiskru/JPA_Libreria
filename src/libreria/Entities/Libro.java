@@ -4,7 +4,10 @@
  */
 package Libreria.Entities;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -12,9 +15,10 @@ import javax.persistence.ManyToOne;
  * @author Kidver
  */
 @Entity
-public class Libro {
+public class Libro implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long isbn;
     private String titulo;
     private Integer anio;
@@ -30,9 +34,9 @@ public class Libro {
     public Libro() {
     }
 
-    public Libro(long isbn, String titulo, Integer anio, Integer ejemplares, Integer ejemplaresPrestados,
+    public Libro(String titulo, Integer anio, Integer ejemplares, Integer ejemplaresPrestados,
             Integer ejemplaresRestantes, Boolean alta, Autor autor, Editorial editorial) {
-        this.isbn = isbn;
+
         this.titulo = titulo;
         this.anio = anio;
         this.ejemplares = ejemplares;
@@ -45,10 +49,6 @@ public class Libro {
 
     public long getIsbn() {
         return isbn;
-    }
-
-    public void setIsbn(long isbn) {
-        this.isbn = isbn;
     }
 
     public String getTitulo() {

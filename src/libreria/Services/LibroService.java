@@ -5,6 +5,7 @@
 package libreria.Services;
 
 import Libreria.Entities.Autor;
+import Libreria.Entities.Editorial;
 import Libreria.Entities.Libro;
 import java.util.List;
 import libreria.Libreria;
@@ -17,6 +18,7 @@ public class LibroService {
 
     LibroDAO dao = new LibroDAO();
     AutorService autorService = new AutorService();
+    EditorialService ediSer = new EditorialService();
 
     public void menuLibros() {
         String aux;
@@ -27,12 +29,12 @@ public class LibroService {
                         + "\n       2) Buscar libro."
                         + "\n       3) Cargar un nuevo libro en la base de datos."
                         + "\n       4) Modificar Titulo del libro"
-                        + "'n       10) Volver al menu principal");
+                        + "\n       5) Volver al menu principal");
                 aux = Libreria.scan.next();
 
                 switch (aux) {
                     case "1":
-                        this.mostarTodos();
+                        this.mostrarTodos();
                         break;
                     case "2":
                         this.menuBusqueda();
@@ -42,15 +44,15 @@ public class LibroService {
                         break;
                     case "4":
                         break;
-                    case "10":
+                    case "5":
                         System.out.println("Volviendo al menu principal...");
                         break;
-                    default: 
+                    default:
                         System.out.println("Opcion incorrecta.");
 
                 }
 
-            } while (!aux.equals("10"));
+            } while (!aux.equals("5"));
         } catch (Exception e) {
         }
     }
@@ -61,8 +63,10 @@ public class LibroService {
                 + "\n             1) Busqueda por ISBN."
                 + "\n             2) Busqueda Por Titulo."
                 + "\n             3) Busqueda por Autor."
-                + "\n             4) Busqueda pot editorial."
-                + "\n             5) Regresar al menu anterior.");
+                + "\n             4) Busqueda por editorial."
+                + "\n             5) Editar informacion."
+                + "\n             6) Eliminar un libro de la base de datos."
+                + "\n             7) Regresar al menu anterior.");
         aux = Libreria.scan.next();
         switch (aux) {
             case "1":
@@ -71,6 +75,20 @@ public class LibroService {
                 break;
             case "2":
                 this.buscarPorTitulo();
+                break;
+            case "3":
+                this.BuscarLibrosAutor();
+                break;
+            case "4":
+                this.BuscarLibrosEditorial();
+                break;
+            case "5":
+                break;
+            case "6":
+                this.eliminarLibro();
+                break;
+            case "7":
+                System.out.println("Volviendo al menu de Libros...");
                 break;
             default:
                 System.out.println("Opcion incorrecta.");
@@ -82,7 +100,7 @@ public class LibroService {
 
         try {
             Libro libro = new Libro();
-           
+
             System.out.println("ingrese titulo");
             String titulo = Libreria.scan.next();
             libro.setTitulo(titulo);
@@ -92,6 +110,8 @@ public class LibroService {
             System.out.println("lista de Autores existentes en la base de datos");
             autorService.listarAutores();
             Autor autor = autorService.buscarPorID();
+            
+            
             if (autor != null) {
                 libro.setAutor(autor);
             } else {
@@ -100,6 +120,21 @@ public class LibroService {
                 autor = autorService.creacion();
                 libro.setAutor(autor);
             }
+
+            System.out.println("lista de Editoriales existentes en la base de datos");
+            ediSer.mostrarTodos();
+            Editorial editorial = ediSer.buscarPorID();
+            if (editorial!=null) {
+                libro.setEditorial(editorial);
+            } else {
+                System.out.println("Editorial no encontrada"
+                        + "\nCreando nueva editorial.");
+                editorial=ediSer.creacion();
+                libro.setEditorial(editorial);
+                
+            }
+            
+            
             dao.guardar(libro);
         } catch (Exception e) {
             System.out.println(e);
@@ -111,8 +146,10 @@ public class LibroService {
 
     }
 
-    public void eliminacion() {
-
+    public void eliminarLibro() {
+        Libro libro;
+        libro = this.buscarPorISBN();
+        dao.eliminar(libro);
     }
 
     private Libro buscarPorISBN() {
@@ -128,36 +165,78 @@ public class LibroService {
     }
 
     private void buscarPorTitulo() {
-            String titulo;
-            List lista;
+        String titulo;
+        List<Libro> lista;
         try {
             System.out.println("Digite el Titulo del libro que desea buscar.");
             titulo = Libreria.scan.next();
-            lista = dao.buscarNombre(titulo);
+            lista = dao.buscarTitulo(titulo);
+
             if (lista.isEmpty()) {
                 System.out.println("No se han encontrado coincidencias");
-                
+
             } else {
-                System.out.println("Se han encontrado "+ lista.size()+" coincidencias");
-                for (Object object : lista) {
-                    object.toString();
+                System.out.println("Se han encontrado " + lista.size() + " coincidencias");
+                for (Libro libro : lista) {
+                    System.out.println(libro);
                 }
             }
-            
         } catch (Exception e) {
             throw e;
         }
     }
-    
-    private void mostarTodos(){
-        try{
-        List<Libro> list = dao.listarLibros();
-        for (Libro libro : list) {
-            System.out.println(libro);
+
+    private void BuscarLibrosAutor() {
+        String nombre;
+        List<Libro> lista;
+        try {
+            System.out.println("Digite El nombre del Autor.");
+            nombre = Libreria.scan.next();
+            lista = dao.buscarPorAutor(nombre);
+            if (lista.isEmpty()) {
+                System.out.println("No se han encontrado libros de éste autor");
+            } else {
+                System.out.println("Se han encontrado " + lista.size() + "Libros de este autor");
+                for (Libro libro : lista) {
+                    System.out.println(libro);
+                }
+            }
+
+        } catch (Exception e) {
+
         }
-        }catch(Exception e){
+    }
+
+    private void BuscarLibrosEditorial() {
+        String nombre;
+        List<Libro> lista;
+        try {
+            System.out.println("Digite El nombre de la Editorial.");
+            nombre = Libreria.scan.next();
+            lista = dao.buscarPorEditorial(nombre);
+            if (lista.isEmpty()) {
+                System.out.println("No se han encontrado libros de ésta Editorial");
+            } else {
+                System.out.println("Se han encontrado " + lista.size() + "Libros de este autor");
+                for (Libro libro : lista) {
+                    System.out.println(libro);
+                }
+            }
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void mostrarTodos() {
+        try {
+            List<Libro> list = dao.listarLibros();
+            for (Libro libro : list) {
+                System.out.println(libro);
+            }
+        } catch (Exception e) {
             throw e;
         }
     }
-    
+
 }//The end

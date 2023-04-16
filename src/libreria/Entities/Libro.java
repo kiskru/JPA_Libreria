@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 public class Libro implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long isbn;
     private String titulo;
     private Integer anio;
@@ -34,15 +34,10 @@ public class Libro implements Serializable {
     public Libro() {
     }
 
-    public Libro(String titulo, Integer anio, Integer ejemplares, Integer ejemplaresPrestados,
-            Integer ejemplaresRestantes, Boolean alta, Autor autor, Editorial editorial) {
+    public Libro(String titulo, Integer anio, Autor autor, Editorial editorial) {
 
         this.titulo = titulo;
         this.anio = anio;
-        this.ejemplares = ejemplares;
-        this.ejemplaresPrestados = ejemplaresPrestados;
-        this.ejemplaresRestantes = ejemplaresRestantes;
-        this.alta = alta;
         this.autor = autor;
         this.editorial = editorial;
     }
@@ -113,6 +108,13 @@ public class Libro implements Serializable {
 
     public void setEditorial(Editorial editorial) {
         this.editorial = editorial;
+    }
+
+    @Override
+    public String toString() {
+        return "isbn: " + isbn + ", titulo: " + titulo + ", anio: " + anio + ", ejemplares: " + ejemplares
+                + ", ejemplaresPrestado: " + ejemplaresPrestados + ", ejemplaresRestantes: " + ejemplaresRestantes
+                + ", activo: " + alta + ", autor: " + autor.getNombre() + ", editorial: " + editorial.getNombre();
     }
 
 }//The end

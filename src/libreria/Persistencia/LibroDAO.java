@@ -5,7 +5,6 @@
 package libreria.Persistencia;
 
 import Libreria.Entities.Libro;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ public class LibroDAO extends DAO<Libro> {
     }
 
     @Override
-    protected void eliminar(Libro libro) {
+    public void eliminar(Libro libro) {
         super.eliminar(libro);
     }
 
@@ -36,18 +35,57 @@ public class LibroDAO extends DAO<Libro> {
         return libro;
     }
 
-    public List<Libro> buscarNombre(String nombre) {
+    public List<Libro> buscarTitulo(String titulo) {
         List<Libro> lista;
         try {
             conectar();
-            lista = em.createQuery("SELECT a FROM Autor a WHERE a.nombre LIKE :nombre")
-                    .setParameter("nombre", "%" + nombre + "%")
+            lista = em.createQuery("SELECT l FROM Libro l WHERE l.titulo LIKE :titulo")
+                    .setParameter("titulo", "%" + titulo + "%")
                     .getResultList();
             desconectar();
             return lista;
         } catch (Exception e) {
-            throw e;
+            System.out.println(e.getMessage());
+            return null;
+        } finally {
+            desconectar();
         }
+    }
+
+    public List<Libro> buscarPorAutor(String nombre) {
+        List<Libro> lista;
+        try {
+            conectar();
+
+            lista = em.createQuery("SELECT l FROM Libro l WHERE l.autor.nombre LIKE :nombre")
+                    .setParameter("nombre", "%" + nombre + "%")
+                    .getResultList();
+            return lista;
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        } finally {
+            desconectar();
+        }
+
+    }
+    
+    public List<Libro> buscarPorEditorial(String nombre) {
+        List<Libro> lista;
+        try {
+            conectar();
+
+            lista = em.createQuery("SELECT l FROM Libro l WHERE l.editorial.nombre LIKE :nombre")
+                    .setParameter("nombre", "%" + nombre + "%")
+                    .getResultList();
+            return lista;
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        } finally {
+            desconectar();
+        }
+
     }
 
     public List<Libro> listarLibros() {
@@ -55,7 +93,7 @@ public class LibroDAO extends DAO<Libro> {
         conectar();
         lista = em.createQuery("SELECT l FROM Libro l")
                 .getResultList();
-        desconectar();        
+        desconectar();
         return lista;
     }
 }//The end

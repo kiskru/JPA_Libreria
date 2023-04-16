@@ -6,6 +6,7 @@ package libreria;
 
 import java.util.Scanner;
 import libreria.Services.AutorService;
+import libreria.Services.EditorialService;
 import libreria.Services.LibroService;
 
 /**
@@ -19,6 +20,7 @@ public class Libreria {
 
         AutorService autSer = new AutorService();
         LibroService libSer = new LibroService();
+        EditorialService ediSer = new EditorialService();
         String opc;
         try {
             do {
@@ -42,6 +44,7 @@ public class Libreria {
                         break;
                     case "3":
                     case "editoriales":
+                        ediSer.menuEditorial();
                         break;
 
                     case "4":
@@ -59,7 +62,7 @@ public class Libreria {
         } catch (Exception e) {
             System.out.println(e);
             System.err.println("Error en el sistema");
-            scan.close();
+            
         }
         
     }

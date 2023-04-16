@@ -20,56 +20,57 @@ public class AutorService {
 
     public void menuAutores() {
         int aux;
-        try {
-            do {
-                System.out.println("\n        Menu Autores    \n"
-                        + "\n"
-                        + "     1) Ver lista completa\n"
-                        + "     2) Buscar un Autor\n"
-                        + "     3) Ingresar un nuevo Autor\n"
-                        + "     4) Modificar el nombre de un Autor\n"
-                        + "     5) Eliminar un Autor de la base de datos\n"
-                        + "     6) Ir al menu principal\n"
-                        + "\n"
-                        + "\n Selecciona un numero del menu");
+        do {
+            System.out.println("\n        Menu Autores    \n"
+                    + "\n"
+                    + "     1) Ver lista completa\n"
+                    + "     2) Buscar un Autor\n"
+                    + "     3) Ingresar un nuevo Autor\n"
+                    + "     4) Modificar el nombre de un Autor\n"
+                    + "     5) Eliminar un Autor de la base de datos\n"
+                    + "     6) Ir al menu principal\n"
+                    + "\n"
+                    + "\n Selecciona un numero del menu");
+            
+            try {
+
                 aux = Libreria.scan.nextInt();
+            } catch (Exception e) {
+                aux = 0;
+                Libreria.scan.next();
+            }
+            switch (aux) {
+                case 1:
+                    List<Autor> lista = dao.listarAutores();
+                    for (Autor a : lista) {
+                        System.out.println(a);
+                    }
+                    break;
+                case 2:
+                    Autor a = menuBuscar();
+                    if (a != null) {
+                        System.out.println(a);
+                    }
+                    break;
+                case 3:
+                    creacion();
+                    break;
+                case 4:
+                    modificarNombre();
+                    break;
+                case 5:
+                    eliminar();
+                    break;
+                case 6:
+                    System.out.println("Saliendo de menu Autores...\n");
+                    aux=6;
+                    break;
+                default:
+                    System.err.println("Opcion incorrecta");
+                    break;
+            }
 
-                switch (aux) {
-                    case 1:
-                        List<Autor> lista = dao.listarAutores();
-                        for (Autor a : lista) {
-                            System.out.println(a);
-                        }
-                        break;
-                    case 2:
-                        Autor a = menuBuscar();
-                        if (a != null) {
-                            System.out.println(a);
-                        }
-                        break;
-                    case 3:
-                        creacion();
-                        break;
-                    case 4:
-                        modificarNombre();
-                        break;
-                    case 5:
-                        eliminar();
-                        break;
-                    case 6:
-                        System.out.println("Saliendo de menu Autores...\n");
-                        break;
-                    default:
-                        System.err.println("Opcion incorrecta\n"
-                                + "Seleccione un numero de la lista opciones del menu");
-                        break;
-                }
-
-            } while (aux != 6);
-        } catch (Exception e) {
-            e.toString();
-            Libreria.scan.close();
-        }
+        } while (aux != 6);
 
     }
 
@@ -107,13 +108,10 @@ public class AutorService {
 
     public Autor creacion() {
         try {
-            Integer id;
             String nombre;
-            System.out.println("indique el ID");
-            id = Libreria.scan.nextInt();
             System.out.println("indique el nombre");
             nombre = Libreria.scan.next();
-            Autor autor = new Autor(id, nombre);
+            Autor autor = new Autor(nombre);
             autor.toString();
             System.out.println("creacion exitosa!!\n"
                     + "agregando en la base de datos...");

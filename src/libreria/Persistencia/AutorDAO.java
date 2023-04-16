@@ -35,10 +35,12 @@ public class AutorDAO extends DAO<Autor> {
                 = (Autor) em.createQuery("SELECT a FROM Autor a WHERE a.nombre LIKE :nombre")
                         .setParameter("nombre", "%" + nombre + "%")
                         .getSingleResult();
-        desconectar();
+        
         return autor;
         }catch(Exception e){
             throw e;
+        }finally{
+            desconectar();
         }        
     }
 
@@ -47,12 +49,13 @@ public class AutorDAO extends DAO<Autor> {
         conectar();
         Autor autor
                 = em.find(Autor.class, id);
-        desconectar();
         return autor;
         }catch(Exception e){
             System.out.println(e);
             return null;
-        }
+        }finally{
+            desconectar();
+        } 
     }
 
     public List<Autor> listarAutores() {

@@ -5,6 +5,8 @@
 package Libreria.Entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -14,6 +16,7 @@ import javax.persistence.Id;
 public class Autor {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombre;
     private Boolean alta;
@@ -21,8 +24,7 @@ public class Autor {
     public Autor() {
     }
 
-    public Autor(Integer id, String nombre) {
-        this.id = id;
+    public Autor(String nombre) {
         this.nombre = nombre;
         this.alta = true;
     }
@@ -56,5 +58,4 @@ public class Autor {
         return "ID= " + id + " nombre= " + nombre;
     }
 
-    
 }//The end

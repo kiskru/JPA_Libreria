@@ -5,6 +5,8 @@
 package Libreria.Entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -14,6 +16,7 @@ import javax.persistence.Id;
 public class Editorial {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombre;
     Boolean alta;
@@ -21,8 +24,7 @@ public class Editorial {
     public Editorial() {
     }
 
-    public Editorial(Integer id, String nombre) {
-        this.id = id;
+    public Editorial(String nombre) {
         this.nombre = nombre;
         this.alta = true;
     }

@@ -55,7 +55,7 @@ public class Autor {
 
     @Override
     public String toString() {
-        return "ID= " + id + " nombre= " + nombre;
+        return "ID= " + id + " nombre= " + nombre + ", Activo: " + alta;
     }
 
 }//The end

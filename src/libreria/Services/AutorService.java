@@ -23,15 +23,16 @@ public class AutorService {
         do {
             System.out.println("\n        Menu Autores    \n"
                     + "\n"
-                    + "     1) Ver lista completa\n"
-                    + "     2) Buscar un Autor\n"
-                    + "     3) Ingresar un nuevo Autor\n"
-                    + "     4) Modificar el nombre de un Autor\n"
-                    + "     5) Eliminar un Autor de la base de datos\n"
-                    + "     6) Ir al menu principal\n"
+                    + "     1) Ver lista completa.\n"
+                    + "     2) Buscar un Autor.\n"
+                    + "     3) Ingresar un nuevo Autor.\n"
+                    + "     4) Modificar el nombre de un Autor.\n"
+                    + "     5) Eliminar un Autor de la base de datos.\n"
+                    + "     6) Dar de alta o baja a un autor.\n"
+                    + "     0) Ir al menu principal.\n"
                     + "\n"
-                    + "\n Selecciona un numero del menu");
-            
+                    + "\n Selecciona un numero del menu.");
+
             try {
 
                 aux = Libreria.scan.nextInt();
@@ -41,7 +42,7 @@ public class AutorService {
             }
             switch (aux) {
                 case 1:
-                    List<Autor> lista = dao.listarAutores();
+                    List<Autor> lista = this.listarAutores();
                     for (Autor a : lista) {
                         System.out.println(a);
                     }
@@ -62,15 +63,17 @@ public class AutorService {
                     eliminar();
                     break;
                 case 6:
+                    this.darAltaBaja();
+                    break;
+                case 0:
                     System.out.println("Saliendo de menu Autores...\n");
-                    aux=6;
                     break;
                 default:
                     System.err.println("Opcion incorrecta");
                     break;
             }
 
-        } while (aux != 6);
+        } while (aux != 0);
 
     }
 
@@ -102,27 +105,35 @@ public class AutorService {
         }
     }
 
-    public void listarAutores() {
-        dao.listarAutores();
+    public List<Autor> listarAutores() {
+        List<Autor> lista;
+        lista = dao.listarAutores();
+        return lista;
     }
 
     public Autor creacion() {
-        try {
+       
+            Autor autor;
             String nombre;
             System.out.println("indique el nombre");
             nombre = Libreria.scan.next();
-            Autor autor = new Autor(nombre);
-            autor.toString();
-            System.out.println("creacion exitosa!!\n"
-                    + "agregando en la base de datos...");
-            dao.guardar(autor);
-            System.out.println("Agregado con exito!!!");
-            return autor;
-        } catch (Exception e) {
-            System.out.println(e);
-            System.out.println("No se ha podido crear el Autor");
-            return null;
-        }
+            
+            autor = dao.buscarNombre(nombre);
+            
+            if (!autor.getNombre().equalsIgnoreCase(nombre)) {
+                autor = new Autor();
+                autor.setNombre(nombre);
+                autor.toString();
+                System.out.println("creacion exitosa!!\n"
+                        + "agregando en la base de datos...");
+                dao.guardar(autor);
+                System.out.println("Agregado con exito!!!");
+                return autor;
+            } else {
+                System.out.println("El autor ya se encuentra guardado en la base de datos");
+                return null;
+            }
+        
     }
 
     public void modificarNombre() {
@@ -137,6 +148,42 @@ public class AutorService {
             autor.toString();
         } catch (Exception e) {
             e.toString();
+        }
+    }
+
+    public void darAltaBaja() {
+        Autor autor = menuBuscar();
+        String aux;
+        System.out.println(autor);
+        System.out.println("Estado acual del actor: " + autor.getAlta());
+        System.out.println("Desea modificar el estado? Y/N");
+        try {
+
+            do {
+                aux = Libreria.scan.next().toUpperCase();
+                if (!aux.equalsIgnoreCase("Y") && !aux.equalsIgnoreCase("N")) {
+                    System.out.println("Debes elegir Y o N");
+                } else {
+                    if (aux.equals("Y")) {
+                        //cambia estdo
+                        if (autor.getAlta() == true) {
+                            autor.setAlta(Boolean.FALSE);
+                        } else {
+                            autor.setAlta(true);
+                        }
+
+                        dao.editar(autor);
+                        System.out.println("Estado cambiado.");
+                    }
+                    if (aux.equalsIgnoreCase("N")) {
+                        System.out.println("No se ha cambiado el estado del autor.");
+                    }
+                }
+            } while (!aux.equals("Y") && !aux.equals("N"));
+
+        } catch (Exception e) {
+            System.out.println("Error en cabio alta_Baja");
+            System.out.println(e);
         }
     }
 

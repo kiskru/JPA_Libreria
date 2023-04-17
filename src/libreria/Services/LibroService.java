@@ -7,6 +7,7 @@ package libreria.Services;
 import Libreria.Entities.Autor;
 import Libreria.Entities.Editorial;
 import Libreria.Entities.Libro;
+import java.util.InputMismatchException;
 import java.util.List;
 import libreria.Libreria;
 import libreria.Persistencia.LibroDAO;
@@ -29,7 +30,9 @@ public class LibroService {
                         + "\n       2) Buscar libro."
                         + "\n       3) Cargar un nuevo libro en la base de datos."
                         + "\n       4) Modificar Titulo del libro"
-                        + "\n       5) Volver al menu principal");
+                        + "\n       5) Eliminar un libro de la base de datos."
+                        + "\n       6) Dar alta o baja a un libro."
+                        + "\n       0) Volver al menu principal");
                 aux = Libreria.scan.next();
 
                 switch (aux) {
@@ -45,6 +48,12 @@ public class LibroService {
                     case "4":
                         break;
                     case "5":
+                        this.eliminarLibro();
+                        break;
+                    case "6":
+                        this.darAltaBaja();
+                        break;
+                    case "0":
                         System.out.println("Volviendo al menu principal...");
                         break;
                     default:
@@ -52,7 +61,7 @@ public class LibroService {
 
                 }
 
-            } while (!aux.equals("5"));
+            } while (!aux.equals("0"));
         } catch (Exception e) {
         }
     }
@@ -64,9 +73,7 @@ public class LibroService {
                 + "\n             2) Busqueda Por Titulo."
                 + "\n             3) Busqueda por Autor."
                 + "\n             4) Busqueda por editorial."
-                + "\n             5) Editar informacion."
-                + "\n             6) Eliminar un libro de la base de datos."
-                + "\n             7) Regresar al menu anterior.");
+                + "\n             0) Regresar al menu anterior.");
         aux = Libreria.scan.next();
         switch (aux) {
             case "1":
@@ -82,12 +89,7 @@ public class LibroService {
             case "4":
                 this.BuscarLibrosEditorial();
                 break;
-            case "5":
-                break;
-            case "6":
-                this.eliminarLibro();
-                break;
-            case "7":
+            case "0":
                 System.out.println("Volviendo al menu de Libros...");
                 break;
             default:
@@ -100,42 +102,64 @@ public class LibroService {
 
         try {
             Libro libro = new Libro();
+            List<Libro> listaLibros;
 
             System.out.println("ingrese titulo");
             String titulo = Libreria.scan.next();
-            libro.setTitulo(titulo);
-            System.out.println("ingrese año");
-            Integer anio = Libreria.scan.nextInt();
-            libro.setAnio(anio);
-            System.out.println("lista de Autores existentes en la base de datos");
-            autorService.listarAutores();
-            Autor autor = autorService.buscarPorID();
-            
-            
-            if (autor != null) {
-                libro.setAutor(autor);
-            } else {
-                System.out.println("\nNo se ha encontrado el ID ingresado"
-                        + "\nCreando Nuevo Autor");
-                autor = autorService.creacion();
-                libro.setAutor(autor);
-            }
+            listaLibros = dao.buscarTitulo(titulo);
+            if (listaLibros.isEmpty()) {
 
-            System.out.println("lista de Editoriales existentes en la base de datos");
-            ediSer.mostrarTodos();
-            Editorial editorial = ediSer.buscarPorID();
-            if (editorial!=null) {
-                libro.setEditorial(editorial);
+                libro.setTitulo(titulo);
+                System.out.println("ingrese año");
+                Integer anio = Libreria.scan.nextInt();
+                libro.setAnio(anio);
+                System.out.println("lista de Autores existentes en la base de datos");
+                List<Autor> listaAutor = autorService.listarAutores();
+                for (Autor autor : listaAutor) {
+                    System.out.println(autor);
+                }
+                Autor autor = autorService.buscarPorID();
+
+                if (autor != null) {
+                    libro.setAutor(autor);
+                } else {
+                    System.out.println("\nNo se ha encontrado el ID ingresado"
+                            + "\nCreando Nuevo Autor");
+                    autor = autorService.creacion();
+                    libro.setAutor(autor);
+                }
+
+                System.out.println("lista de Editoriales existentes en la base de datos.");
+                ediSer.mostrarTodos();
+                Editorial editorial = ediSer.buscarPorID();
+                if (editorial != null) {
+                    libro.setEditorial(editorial);
+                } else {
+                    System.out.println("Editorial no encontrada."
+                            + "\nCreando nueva editorial.");
+                    editorial = ediSer.creacion();
+                    libro.setEditorial(editorial);
+
+                }
+
+                if (libro.getAutor() != null && libro.getEditorial() != null) {
+                    dao.guardar(libro);
+
+                    System.out.println("Libro agregado exitosamente en la base de datos.");
+                    System.out.println(libro);
+                } else {
+                    if (libro.getAutor() == null) {
+                        System.out.println("No has ingresado informacion valida para autor.");
+                    }
+                    if (libro.getEditorial() == null) {
+                        System.out.println("No has ingresado informacion valida para la Editorial.");
+                    }
+                }
             } else {
-                System.out.println("Editorial no encontrada"
-                        + "\nCreando nueva editorial.");
-                editorial=ediSer.creacion();
-                libro.setEditorial(editorial);
-                
+                System.out.println("El libro ya se encuentra ingresado en la base de datos.");
             }
-            
-            
-            dao.guardar(libro);
+        } catch (InputMismatchException e) {
+            System.out.println("El campo de año es un dato obligatorio");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -196,7 +220,7 @@ public class LibroService {
             if (lista.isEmpty()) {
                 System.out.println("No se han encontrado libros de éste autor");
             } else {
-                System.out.println("Se han encontrado " + lista.size() + "Libros de este autor");
+                System.out.println("Se han encontrado " + lista.size() + "Libros de este autor\n");
                 for (Libro libro : lista) {
                     System.out.println(libro);
                 }
@@ -217,7 +241,7 @@ public class LibroService {
             if (lista.isEmpty()) {
                 System.out.println("No se han encontrado libros de ésta Editorial");
             } else {
-                System.out.println("Se han encontrado " + lista.size() + "Libros de este autor");
+                System.out.println("Se han encontrado " + lista.size() + "Libros de este autor\n");
                 for (Libro libro : lista) {
                     System.out.println(libro);
                 }
@@ -236,6 +260,42 @@ public class LibroService {
             }
         } catch (Exception e) {
             throw e;
+        }
+    }
+
+    public void darAltaBaja() {
+        Libro libro = this.buscarPorISBN();
+        String aux;
+        System.out.println(libro);
+        System.out.println("Estado acual del libro: " + libro.getAlta());
+        System.out.println("Desea modificar el estado? Y/N");
+        try {
+
+            do {
+                aux = Libreria.scan.next().toUpperCase();
+                if (!aux.equalsIgnoreCase("Y") && !aux.equalsIgnoreCase("N")) {
+                    System.out.println("Debes elegir Y o N");
+                } else {
+                    if (aux.equals("Y")) {
+                        //cambia estdo
+                        if (libro.getAlta() == true) {
+                            libro.setAlta(Boolean.FALSE);
+                        } else {
+                            libro.setAlta(true);
+                        }
+
+                        dao.editar(libro);
+                        System.out.println("Estado cambiado.");
+                    }
+                    if (aux.equalsIgnoreCase("N")) {
+                        System.out.println("No se ha cambiado el estado del libro.");
+                    }
+                }
+            } while (!aux.equals("Y") && !aux.equals("N"));
+
+        } catch (Exception e) {
+            System.out.println("Error en cabio alta_Baja");
+            System.out.println(e);
         }
     }
 

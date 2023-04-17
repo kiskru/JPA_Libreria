@@ -40,6 +40,7 @@ public class Libro implements Serializable {
         this.anio = anio;
         this.autor = autor;
         this.editorial = editorial;
+        this.alta = Boolean.TRUE;
     }
 
     public long getIsbn() {
@@ -112,9 +113,10 @@ public class Libro implements Serializable {
 
     @Override
     public String toString() {
-        return "isbn: " + isbn + ", titulo: " + titulo + ", anio: " + anio + ", ejemplares: " + ejemplares
-                + ", ejemplaresPrestado: " + ejemplaresPrestados + ", ejemplaresRestantes: " + ejemplaresRestantes
-                + ", activo: " + alta + ", autor: " + autor.getNombre() + ", editorial: " + editorial.getNombre();
+        return "isbn: " + isbn + ", titulo: " + titulo + ", anio: " + anio + "\n"
+                + "Autor: " + autor.getNombre() + ", editorial: " + editorial.getNombre() + "\n"
+                + "Activo: " + alta + "\n"
+                + "Ejemplares: " + ejemplares + ", ejemplares Prestados: " + ejemplaresPrestados + ", ejemplares Restantes: " + ejemplaresRestantes;
     }
 
 }//The end

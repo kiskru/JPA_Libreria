@@ -6,12 +6,18 @@
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/LibroDAO.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Entities/Autor.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Services/LibroService.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/PrestamoDAO.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/DAO.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Services/PrestamoService.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Services/AutorService.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Entities/Cliente.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/ClienteDAO.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Services/EditorialService.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/EditorialDAO.java</file>
-            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/DAO.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Persistencia/AutorDAO.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Entities/Editorial.java</file>
-            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Services/AutorService.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Entities/Prestamo.java</file>
+            <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Services/ClienteService.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Entities/Libro.java</file>
             <file>file:/D:/Programacion%20Egg/Java/JPALibreria/src/libreria/Libreria.java</file>
         </group>

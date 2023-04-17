@@ -26,7 +26,9 @@ public class EditorialService {
                         + "\n       3) Buscar Editorial por nombre."
                         + "\n       4) Cargar una nueva Editorial en la base de datos."
                         + "\n       5) Modificar el Nombre de la Editorial"
-                        + "\n       6) Volver al menu principal");
+                        + "\n       6) Eliminar una editorial de la base de datos."
+                        + "\n       7) Dar alta o baja a una editorial"
+                        + "\n       0) Volver al menu principal");
                 aux = Libreria.scan.next();
 
                 switch (aux) {
@@ -50,15 +52,20 @@ public class EditorialService {
                                 this.modificarNombre());
                         break;
                     case "6":
+                        this.eliminacion();
+                        break;
+                    case "7":
+                        this.darAltaBaja();
+                        break;
+                    case "0":
                         System.out.println("Volviendo al menu principal...");
-
                         break;
                     default:
                         System.out.println("Opcion incorrecta.");
 
                 }
 
-            } while (!aux.equals("6"));
+            } while (!aux.equals("0"));
         } catch (Exception e) {
         }
     }
@@ -66,8 +73,8 @@ public class EditorialService {
     public void mostrarTodos() {
         try {
             List<Editorial> list = dao.listarTodos();
-            for (Editorial libro : list) {
-                System.out.println(libro);
+            for (Editorial editorial : list) {
+                System.out.println(editorial);
             }
         } catch (Exception e) {
             throw e;
@@ -75,15 +82,22 @@ public class EditorialService {
     }
 
     public Editorial creacion() {
-        String titulo;
-        Editorial editorial = new Editorial();
+        String nombre;
+        Editorial editorial;
         try {
-            System.out.println("Ingrese el titulo de la Editorial");
-            titulo = Libreria.scan.next();
-            editorial.setNombre(titulo);
-            dao.guardar(editorial);
-            System.out.println("Creacion exitosa!!!");
-            return editorial;
+            System.out.println("Ingrese el Nombre de la Editorial");
+            nombre = Libreria.scan.next();
+            editorial = dao.buscarNombre(nombre);
+            if (!editorial.getNombre().equalsIgnoreCase(nombre)) {
+                editorial = new Editorial();
+                editorial.setNombre(nombre);
+                dao.guardar(editorial);
+                System.out.println("Creacion exitosa!!!");
+                return editorial;
+            } else {
+                System.out.println("La editorial ya se encuentra en la base de datos.");
+                return null;
+            }
         } catch (Exception e) {
             System.err.println("Creacion fallida");
             System.out.println(e);
@@ -96,12 +110,10 @@ public class EditorialService {
         String nombre;
         Editorial editorial;
         editorial = this.menuBuscar();
-        
-        
-        
+
         try {
             System.out.println("Escriba el nuevo nombre para la editorial.");
-            nombre= Libreria.scan.next();
+            nombre = Libreria.scan.next();
             editorial.setNombre(nombre);
             dao.editar(editorial);
             System.out.println("Nombre actualizado!!!");
@@ -116,7 +128,10 @@ public class EditorialService {
     }
 
     public void eliminacion() {
-
+        Editorial editorial;
+        editorial = this.buscarPorID();
+        dao.eliminar(editorial);
+        System.out.println("Eliminando...\n");
     }
 
     private Editorial menuBuscar() {
@@ -157,6 +172,7 @@ public class EditorialService {
             return editorial;
         } catch (Exception e) {
             System.out.println(e);
+            Libreria.scan.next();
             return null;
         }
     }
@@ -167,7 +183,42 @@ public class EditorialService {
         System.out.println("Ingrese el nombre para la busqueda");
         nombre = Libreria.scan.next();
         editorial = dao.buscarNombre(nombre);
-
         return editorial;
+    }
+
+    public void darAltaBaja() {
+        Editorial editorial = menuBuscar();
+        String aux;
+        System.out.println(editorial);
+        System.out.println("Estado acual de la editorial: " + editorial.getAlta());
+        System.out.println("Desea modificar el estado? Y/N");
+        try {
+
+            do {
+                aux = Libreria.scan.next().toUpperCase();
+                if (!aux.equalsIgnoreCase("Y") && !aux.equalsIgnoreCase("N")) {
+                    System.out.println("Debes elegir Y o N");
+                } else {
+                    if (aux.equals("Y")) {
+                        //cambia estdo
+                        if (editorial.getAlta() == true) {
+                            editorial.setAlta(Boolean.FALSE);
+                        } else {
+                            editorial.setAlta(true);
+                        }
+
+                        dao.editar(editorial);
+                        System.out.println("Estado cambiado.");
+                    }
+                    if (aux.equalsIgnoreCase("N")) {
+                        System.out.println("No se ha cambiado el estado de la editorial.");
+                    }
+                }
+            } while (!aux.equals("Y") && !aux.equals("N"));
+
+        } catch (Exception e) {
+            System.out.println("Error en cabio alta_Baja");
+            System.out.println(e);
+        }
     }
 }//The end

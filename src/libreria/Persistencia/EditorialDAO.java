@@ -23,7 +23,7 @@ public class EditorialDAO extends DAO<Editorial> {
     }
 
     @Override
-    protected void eliminar(Editorial edit) {
+    public void eliminar(Editorial edit) {
         super.eliminar(edit);
     }
 
@@ -46,6 +46,7 @@ public class EditorialDAO extends DAO<Editorial> {
             return editorial;
         } catch (Exception e) {
             System.err.println(e);
+            System.out.println("No se ha encontrado una Editorial con este nombre.");
             return null;
         } finally {
             desconectar();
